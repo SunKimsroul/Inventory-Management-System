@@ -167,14 +167,49 @@ public class InventoryLogic {
         }
     }
     
-    public void saleOrderManagement() {
-        System.out.println("Sale order management...");
-        // Logic for sale order management goes here
+   public void saleOrderManagement() {
+        System.out.println("Enter Product ID for sale: ");
+        int id = sc.nextInt();
+        ProductModel product = findProductById(id);
+        if (product != null) {
+            System.out.println("Enter quantity to sell: ");
+            int quantityToSell = sc.nextInt();
+            if (quantityToSell <= product.getQuantity()) {
+                product.setQuantity(product.getQuantity() - quantityToSell);
+                System.out.println("Sale successful. Remaining stock: " + product.getQuantity());
+                logTransaction("Sale", id, quantityToSell);
+            } else {
+                System.out.println("Insufficient stock. Available quantity: " + product.getQuantity());
+            }
+        } else {
+            System.out.println("Product not found.");
+        }
     }
-    
+
     public void purchaseOrder() {
-        System.out.println("Purchase order...");
-        // Logic for purchase order goes here
+        System.out.println("Enter Product ID for restocking: ");
+        int id = sc.nextInt();
+        ProductModel product = findProductById(id);
+        int quantityToAdd = 0;
+
+        if (product != null) {
+            System.out.println("Enter quantity to add: ");
+            quantityToAdd = sc.nextInt();
+            product.setQuantity(product.getQuantity() + quantityToAdd);
+            System.out.println("Restock successful. New stock: " + product.getQuantity());
+            logTransaction("Purchase", id, quantityToAdd);
+        } else {
+            System.out.println("Product not found. Please add the product first.");
+        }
+    }
+
+    private ProductModel findProductById(int productId) {
+        for (ProductModel product : productList) {
+            if (product.getProductId() == productId) {
+                return product;
+            }
+        }
+        return null;
     }
     
     public void writeArrayListToFile() {
